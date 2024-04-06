@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "NumbersProto";
+option java_package = "com.example.grpc.numbers";
+
+service NumbersService {
+  rpc Number(NumberRequest) returns (stream NumberResponse);
+}
+
+message NumberRequest {
+  int32 firstValue = 1;
+  int32 lastValue = 2;
+}
+
+message NumberResponse {
+  int32 value = 1;
+}
