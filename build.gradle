@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+    id 'com.google.protobuf' version '0.8.18'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    // GRPC and protobuf dependencies
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.49.2'
+    implementation 'io.grpc:grpc-protobuf:1.49.2'
+    implementation 'io.grpc:grpc-stub:1.49.2'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
+    // logback dependencies
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+}
+
+// Specify the main class for the application plugin
+mainClassName = project.hasProperty('mainClass') ? project.getProperty('mainClass') : ''
+
+// Generate the protobuf classes
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.17.3'
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.49.2'
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.plugins {
+                grpc {}
+            }
+        }
+    }
+}
+sourceSets.main.java.srcDir new File(buildDir, 'generated/source')
